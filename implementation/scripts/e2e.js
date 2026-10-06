@@ -131,6 +131,48 @@ async function login(username) {
   const pend = await call("GET", `/emergency/pending/${addr("patient1")}`, patient);
   check(pend.status === 200 && pend.data.events.length >= 1, "patient can see the emergency event");
 
+  // 7b. Merkle-batched upload: one anchorBatch tx for N records, proofs verifiable on-chain
+  const { ethers } = require("ethers");
+  const deployment = require("../backend/src/chain/deployment.json");
+  const artifact = require("../artifacts/contracts/RecordAnchor.sol/RecordAnchor.json");
+  const rpc = new ethers.JsonRpcProvider(process.env.RPC_URL || "http://127.0.0.1:8545");
+  const anchor = new ethers.Contract(deployment.contracts.RecordAnchor, artifact.abi, rpc);
+  const { leafFor } = require("./lib/merkle");
+
+  const batchContents = [0, 1, 2].map((i) => Buffer.from(`batch record ${i} ${Date.now()}`));
+  const bform = new FormData();
+  bform.append("patientAddress", addr("patient1"));
+  batchContents.forEach((c, i) => bform.append("files", new Blob([c]), `b${i}.txt`));
+  const batch = await call("POST", "/records/upload-batch", doctor, bform, true);
+  check(batch.status === 201 && batch.data.records.length === 3, "batch upload anchors 3 records");
+  check(batch.data.registered === true, "batch records registered by default");
+
+  for (const [i, r] of batch.data.records.entries()) {
+    const leaf = leafFor({ recordId: r.recordId, patient: addr("patient1"), contentHash: r.contentHash, cid: r.cid });
+    const ok = await anchor.verifyInclusion("0x" + leaf.toString("hex"), r.proof, batch.data.merkleRoot);
+    check(ok === true, `batch record ${i}: Merkle proof verifies on-chain against the anchored root`);
+    const m = await call("GET", `/records/${r.recordId}/meta`, patient);
+    check(m.data.anchoredInBatch === true, `batch record ${i}: marked anchoredInBatch`);
+  }
+  const first = await call("GET", `/records/${batch.data.records[0].recordId}/content`, patient);
+  check(first.status === 200 && Buffer.compare(first.data, batchContents[0]) === 0, "patient decrypts a batch-anchored record");
+
+  const tampered = batch.data.records[0];
+  const badLeaf = leafFor({ recordId: tampered.recordId, patient: addr("patient1"), contentHash: ethers.hexlify(ethers.randomBytes(32)), cid: tampered.cid });
+  check(
+    (await anchor.verifyInclusion("0x" + badLeaf.toString("hex"), tampered.proof, batch.data.merkleRoot)) === false,
+    "tampered record fails Merkle verification"
+  );
+
+  const lazyForm = new FormData();
+  lazyForm.append("patientAddress", addr("patient1"));
+  lazyForm.append("register", "false");
+  [0, 1].forEach((i) => lazyForm.append("files", new Blob([Buffer.from(`lazy ${i} ${Date.now()}`)]), `l${i}.txt`));
+  const lazy = await call("POST", "/records/upload-batch", doctor, lazyForm, true);
+  check(lazy.status === 201 && lazy.data.registered === false, "lazy batch (register=false) anchors the root only");
+  const lazyMeta = await call("GET", `/records/${lazy.data.records[0].recordId}/meta`, patient);
+  check(lazyMeta.status === 404, "lazy-batch record is provable but not individually registered on-chain");
+
   // 8. audit trail
   const trail = await call("GET", `/audit/${addr("patient1")}`, auditor);
   check(trail.status === 200, "auditor reads patient audit trail");

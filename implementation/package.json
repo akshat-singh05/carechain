@@ -15,9 +15,7 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.0",
-    "keccak256": "^1.0.6",
-    "merkletreejs": "^0.3.11"
+    "hardhat": "^2.22.0"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
@@ -27,6 +25,8 @@
     "ethers": "^6.13.0",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.3.11",
     "multer": "^1.4.5-lts.1"
   }
 }

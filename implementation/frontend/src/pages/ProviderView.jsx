@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadRecord, requestAccess, getRecordContent, emergencyAccessRequest } from "../api/client";
+import { uploadRecord, uploadBatch, requestAccess, getRecordContent, emergencyAccessRequest } from "../api/client";
 
 export default function ProviderView({ user }) {
   const [error, setError] = useState(null);
@@ -7,7 +7,7 @@ export default function ProviderView({ user }) {
 
   // Upload
   const [uploadPatient, setUploadPatient] = useState("");
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
 
   // Normal access request
   const [reqPatient, setReqPatient] = useState("");
@@ -25,8 +25,16 @@ export default function ProviderView({ user }) {
     setError(null);
     setStatus(null);
     try {
-      const result = await uploadRecord(uploadPatient, file);
-      setStatus(`Anchored record ${result.recordId} (tx ${result.txHash.slice(0, 10)}...)`);
+      if (files.length > 1) {
+        const result = await uploadBatch(uploadPatient, files);
+        setStatus(
+          `Merkle-batched ${result.records.length} records with ONE anchor tx ` +
+            `(root ${result.merkleRoot.slice(0, 12)}..., batch #${result.batchId})`
+        );
+      } else {
+        const result = await uploadRecord(uploadPatient, files[0]);
+        setStatus(`Anchored record ${result.recordId} (tx ${result.txHash.slice(0, 10)}...)`);
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -83,8 +91,8 @@ export default function ProviderView({ user }) {
         <form onSubmit={submitUpload}>
           <label>Patient address</label>
           <input value={uploadPatient} onChange={(e) => setUploadPatient(e.target.value)} placeholder="0x..." />
-          <label>File</label>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <label>File(s) — choose several to anchor them as one Merkle batch</label>
+          <input type="file" multiple onChange={(e) => setFiles([...e.target.files])} />
           <button type="submit">Encrypt + anchor record</button>
         </form>
       </div>

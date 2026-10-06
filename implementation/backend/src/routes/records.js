@@ -8,6 +8,7 @@ const { signerFor, findByAddress } = require("../services/users");
 const { encryptRecord, decryptRecord } = require("../services/crypto");
 const storage = require("../services/storage");
 const keystore = require("../services/keystore");
+const { buildTree, getRoot, getProof } = require("../../../scripts/lib/merkle");
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
@@ -48,6 +49,64 @@ router.post("/upload", requireAuth, requireRole("provider"), upload.single("file
       contentHash: "0x" + contentHashHex,
       txHash: receipt.hash,
       blockNumber: receipt.blockNumber,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * Merkle-batched upload (contribution (d)): encrypts every file, builds one
+ * Merkle tree over all records, and anchors ONLY the root with a single
+ * anchorBatch transaction. A manifest listing every leaf is stored off-chain.
+ * Per-record proofs are returned so inclusion can be verified later with
+ * RecordAnchor.verifyInclusion. By default each record is also registered
+ * on-chain (registerBatchRecord) so the normal /records/:id/content route works;
+ * pass register=false to skip that per-record cost (the lazy mode the paper
+ * measures) -- those records are then provable but not readable via the API.
+ */
+router.post("/upload-batch", requireAuth, requireRole("provider"), upload.array("files", 100), async (req, res) => {
+  try {
+    const { patientAddress } = req.body;
+    const register = req.body.register !== "false";
+    if (!req.files || req.files.length === 0) return res.status(400).json({ error: "files are required (multipart field 'files')" });
+    if (!patientAddress) return res.status(400).json({ error: "patientAddress is required" });
+
+    const records = req.files.map((f) => {
+      const { blob, key } = encryptRecord(f.buffer);
+      const { cid, contentHashHex } = storage.put(blob);
+      const recordId = newRecordId();
+      keystore.wrapAndStore(recordId, key);
+      return { recordId, patient: patientAddress, contentHash: "0x" + contentHashHex, cid };
+    });
+
+    const { tree, leaves } = buildTree(records);
+    const merkleRoot = getRoot(tree);
+    const proofs = leaves.map((leaf) => getProof(tree, leaf));
+    const manifest = storage.put(
+      Buffer.from(JSON.stringify({ merkleRoot, records: records.map((r, i) => ({ ...r, proof: proofs[i] })) }))
+    );
+
+    const signer = signerFor(findByAddress(req.user.address));
+    const { recordAnchor } = contractsWithSigner(signer);
+    const tx = await recordAnchor.anchorBatch(merkleRoot, records.length, manifest.cid);
+    const receipt = await tx.wait();
+    const batchId = Number((await getContracts().contracts.recordAnchor.totalBatches()) - 1n);
+
+    if (register) {
+      for (let i = 0; i < records.length; i++) {
+        const r = records[i];
+        await (await recordAnchor.registerBatchRecord(batchId, r.recordId, r.patient, r.contentHash, r.cid, proofs[i])).wait();
+      }
+    }
+
+    res.status(201).json({
+      batchId,
+      merkleRoot,
+      manifestCid: manifest.cid,
+      anchorTxHash: receipt.hash,
+      registered: register,
+      records: records.map((r, i) => ({ recordId: r.recordId, cid: r.cid, contentHash: r.contentHash, proof: proofs[i] })),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

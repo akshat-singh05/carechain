@@ -41,6 +41,18 @@ export async function uploadRecord(patientAddress, file) {
   return handle(res);
 }
 
+export async function uploadBatch(patientAddress, files) {
+  const form = new FormData();
+  form.append("patientAddress", patientAddress);
+  files.forEach((f) => form.append("files", f));
+  const res = await fetch(`${BASE}/records/upload-batch`, {
+    method: "POST",
+    headers: { ...authHeaders() },
+    body: form,
+  });
+  return handle(res);
+}
+
 export async function getPatientRecordIds(patientAddress) {
   const res = await fetch(`${BASE}/records/patient/${patientAddress}`, { headers: authHeaders() });
   return handle(res);

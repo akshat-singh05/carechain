@@ -55,7 +55,8 @@ npm run dev
 
 To check the whole stack without the UI, run the end-to-end test against the running backend
 (logs in as each role, uploads/encrypts/anchors a record, exercises consent grant/deny/revoke,
-purpose- and time-bound checks, break-glass access and the audit trail -- 28 assertions):
+purpose- and time-bound checks, Merkle-batched upload with on-chain proof verification,
+break-glass access and the audit trail -- 41 assertions):
 
 ```bash
 npm run e2e
@@ -64,6 +65,14 @@ npm run e2e
 Open the Vite dev server URL (default `http://localhost:5173`) and sign in as one of the demo
 accounts printed by `seed:local` (`patient1`, `patient2`, `doctor1`, `erdoctor1`, `auditor1`, `admin`;
 all use password `password123`).
+
+## Merkle-batched upload
+
+Choose **several files** in the provider's upload form (or `POST /records/upload-batch`, multipart field
+`files`) to anchor them as one batch: one `anchorBatch` transaction stores only the Merkle root, a
+manifest is stored off-chain, and each record's Merkle proof is returned. By default each record is also
+registered on-chain so it can be read through the API; send `register=false` to skip that per-record
+cost (records stay provable via `RecordAnchor.verifyInclusion` but are not readable through the API).
 
 ## Suggested walkthrough
 
