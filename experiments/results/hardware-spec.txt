@@ -1,0 +1,16 @@
+CareChain test machine hardware specification
+Captured via PowerShell `Get-CimInstance Win32_Processor / Win32_OperatingSystem / Win32_ComputerSystem`
+on 2026-09-27.
+
+CPU:            Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz
+Cores:          4 physical / 8 logical (hyper-threaded)
+Max clock:      2112 MHz (reported boost value; base clock per model spec is 1.60GHz)
+RAM (visible):  8,410,091,520 bytes (~7.83 GiB)
+OS:             Microsoft Windows 11 Home Single Language, 64-bit
+Manufacturer:   LENOVO
+Model:          81NG
+
+This is a single consumer laptop, not a server-grade benchmark rig. Report this honestly in the
+paper's Implementation section as a limitation on the absolute throughput/latency numbers -- they
+characterize relative cost (individual vs. batched anchoring, naive vs. ABAC, encryption vs. size),
+not what a production deployment on server hardware would achieve in absolute terms.

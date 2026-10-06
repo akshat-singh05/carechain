@@ -1,0 +1,32 @@
+{
+  "name": "carechain-implementation",
+  "version": "0.1.0",
+  "description": "CareChain: a permissioned-style decentralized healthcare information exchange platform (smart contracts, backend API)",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "seed:local": "hardhat run scripts/seed-demo.js --network localhost",
+    "coverage": "hardhat coverage",
+    "backend": "node backend/src/index.js",
+    "e2e": "node scripts/e2e.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.3.11"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}

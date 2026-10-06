@@ -1,0 +1,7 @@
+operation,n,meanLatencyMs,p50LatencyMs,p95LatencyMs,throughputTps
+registerPatient,30,151.69,150.82,191.15,6.59
+registerProvider,30,175.22,175.19,217.29,5.71
+anchorRecord,30,155.32,150.99,190.14,6.44
+grantConsent,30,143.57,138.62,175.55,6.97
+requestAccess,30,162.27,158.83,192.65,6.16
+revokeConsent,30,153.84,154.26,168.36,6.50

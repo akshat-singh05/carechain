@@ -1,0 +1,10 @@
+node_modules/
+artifacts/
+cache/
+coverage/
+coverage.json
+.env
+backend/storage/*
+!backend/storage/.gitkeep
+backend/src/chain/deployment.json
+backend/src/chain/users.json

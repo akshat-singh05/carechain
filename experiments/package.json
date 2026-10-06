@@ -1,0 +1,20 @@
+{
+  "name": "carechain-experiments",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Benchmark scripts for PLAN.md Section 4. Each script talks to an already-running local Hardhat node (see ../implementation/README.md) via plain ethers.js, so it exercises the exact same deployed contracts the backend/frontend use -- no separate mock chain.",
+  "scripts": {
+    "bench:latency": "node scripts/bench-latency-throughput.js",
+    "bench:concurrency": "node scripts/bench-concurrency.js",
+    "bench:encryption": "node scripts/bench-encryption-overhead.js",
+    "bench:anchoring": "node scripts/bench-anchoring-cost.js",
+    "bench:consent-overhead": "node scripts/bench-naive-vs-abac.js",
+    "bench:all": "npm run bench:latency && npm run bench:concurrency && npm run bench:encryption && npm run bench:anchoring && npm run bench:consent-overhead",
+    "plot": "python scripts/plot_results.py"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0",
+    "merkletreejs": "^0.3.11",
+    "keccak256": "^1.0.6"
+  }
+}
