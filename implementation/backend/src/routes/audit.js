@@ -3,7 +3,10 @@ const { requireAuth } = require("../middleware/auth");
 const { contractsWithSigner } = require("../chain/contracts");
 const { signerFor, findByAddress } = require("../services/users");
 
+const { validateAddressParam } = require("../middleware/validate");
+
 const router = express.Router();
+router.param("patientAddress", validateAddressParam);
 
 const ACTION_NAMES = [
   "RECORD_ANCHORED",

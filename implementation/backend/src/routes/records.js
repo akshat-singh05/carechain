@@ -10,7 +10,10 @@ const storage = require("../services/storage");
 const keystore = require("../services/keystore");
 const { buildTree, getRoot, getProof } = require("../../../scripts/lib/merkle");
 
+const { addressFields, validateAddressParam } = require("../middleware/validate");
+
 const router = express.Router();
+router.param("patientAddress", validateAddressParam);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 
 function newRecordId() {
@@ -25,7 +28,7 @@ function newRecordId() {
  * on-chain via the uploading provider's own signer (so msg.sender in the
  * contract really is the authenticated provider, not a shared backend key).
  */
-router.post("/upload", requireAuth, requireRole("provider"), upload.single("file"), async (req, res) => {
+router.post("/upload", requireAuth, requireRole("provider"), upload.single("file"), addressFields("patientAddress"), async (req, res) => {
   try {
     const { patientAddress } = req.body;
     if (!req.file) return res.status(400).json({ error: "file is required (multipart field 'file')" });
@@ -65,7 +68,7 @@ router.post("/upload", requireAuth, requireRole("provider"), upload.single("file
  * pass register=false to skip that per-record cost (the lazy mode the paper
  * measures) -- those records are then provable but not readable via the API.
  */
-router.post("/upload-batch", requireAuth, requireRole("provider"), upload.array("files", 100), async (req, res) => {
+router.post("/upload-batch", requireAuth, requireRole("provider"), upload.array("files", 100), addressFields("patientAddress"), async (req, res) => {
   try {
     const { patientAddress } = req.body;
     const register = req.body.register !== "false";

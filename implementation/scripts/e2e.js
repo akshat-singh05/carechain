@@ -56,6 +56,15 @@ async function login(username) {
   const stillActive = (await call("GET", "/consent/mine", patient)).data.consents.filter((c) => !c.revoked);
   check(stillActive.length === 0, "setup: patient1 has no active consents");
 
+  // A non-address in an address field must give a clear 400, not a confusing ENS error
+  const badAddr = await call("POST", "/consent/grant", patient, {
+    providerAddress: "VIT Vellore",
+    validUntil: Math.floor(Date.now() / 1000) + 3600,
+  });
+  check(badAddr.status === 400 && /start(ing)? with 0x/.test(badAddr.data.error), "invalid address gives a clear 400 error");
+  const badParam = await call("GET", "/audit/not-an-address", auditor);
+  check(badParam.status === 400, "invalid address in the URL gives 400");
+
   // 1. doctor uploads + anchors an encrypted record for patient1
   const plaintext = Buffer.from("CareChain e2e record: BP 120/80, " + Date.now());
   const form = new FormData();

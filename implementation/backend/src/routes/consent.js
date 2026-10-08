@@ -4,6 +4,8 @@ const { requireAuth, requireRole } = require("../middleware/auth");
 const { contractsWithSigner, getContracts } = require("../chain/contracts");
 const { signerFor, findByAddress } = require("../services/users");
 
+const { addressFields } = require("../middleware/validate");
+
 const router = express.Router();
 
 const ALL_RECORDS = ethers.ZeroHash;
@@ -14,7 +16,7 @@ const ALL_RECORDS = ethers.ZeroHash;
  * recordId omitted/absent -> consent covers all of the patient's records.
  * purpose omitted -> consent covers any purpose.
  */
-router.post("/grant", requireAuth, requireRole("patient"), async (req, res) => {
+router.post("/grant", requireAuth, requireRole("patient"), addressFields("providerAddress"), async (req, res) => {
   try {
     const { providerAddress, recordId, purpose, validFrom, validUntil } = req.body || {};
     if (!providerAddress || !validUntil) {

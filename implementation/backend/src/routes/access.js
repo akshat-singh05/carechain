@@ -3,6 +3,8 @@ const { requireAuth, requireRole } = require("../middleware/auth");
 const { contractsWithSigner } = require("../chain/contracts");
 const { signerFor, findByAddress } = require("../services/users");
 
+const { addressFields } = require("../middleware/validate");
+
 const router = express.Router();
 
 /**
@@ -14,7 +16,7 @@ const router = express.Router();
  * attempting to open a record (and produces its own ACCESS_GRANTED /
  * ACCESS_DENIED audit entry, independent of any later content fetch).
  */
-router.post("/request", requireAuth, requireRole("provider"), async (req, res) => {
+router.post("/request", requireAuth, requireRole("provider"), addressFields("patientAddress"), async (req, res) => {
   try {
     const { patientAddress, recordId, purpose } = req.body || {};
     if (!patientAddress || !recordId) {

@@ -6,7 +6,10 @@ const { decryptRecord } = require("../services/crypto");
 const storage = require("../services/storage");
 const keystore = require("../services/keystore");
 
+const { addressFields, validateAddressParam } = require("../middleware/validate");
+
 const router = express.Router();
+router.param("patientAddress", validateAddressParam);
 
 /**
  * Break-glass emergency access (PLAN.md contribution (c)). The contract
@@ -22,7 +25,7 @@ const router = express.Router();
  *      point of break-glass is that the responder does not wait for a
  *      normal consent grant.
  */
-router.post("/access", requireAuth, requireRole("provider"), async (req, res) => {
+router.post("/access", requireAuth, requireRole("provider"), addressFields("patientAddress"), async (req, res) => {
   try {
     const { patientAddress, recordId, reason } = req.body || {};
     if (!patientAddress || !recordId || !reason) {
