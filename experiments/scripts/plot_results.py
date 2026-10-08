@@ -102,7 +102,7 @@ def plot_concurrency():
     ax1.plot(levels, throughput, marker=MARKERS[0], color=GRAYS[0])
     ax1.set_xlabel("Concurrent clients")
     ax1.set_ylabel("Throughput (tx/s)")
-    ax1.set_title("(a) Throughput vs. concurrency")
+    ax1.set_title("Throughput vs. concurrency")
 
     ax2b = ax2.twinx()
     ax2.plot(levels, p95, marker=MARKERS[1], color=GRAYS[0], label="p95 latency")
@@ -110,7 +110,7 @@ def plot_concurrency():
     ax2.set_xlabel("Concurrent clients")
     ax2.set_ylabel("p95 latency (ms)")
     ax2b.set_ylabel("Error rate (%)")
-    ax2.set_title("(b) Latency / error rate vs. concurrency")
+    ax2.set_title("Latency and errors vs. concurrency")
     lines1, labels1 = ax2.get_legend_handles_labels()
     lines2, labels2 = ax2b.get_legend_handles_labels()
     ax2.legend(lines1 + lines2, labels1 + labels2, frameon=False, fontsize=7, loc="upper left")
