@@ -62,6 +62,15 @@ async function login(username) {
     validUntil: Math.floor(Date.now() / 1000) + 3600,
   });
   check(badAddr.status === 400 && /start(ing)? with 0x/.test(badAddr.data.error), "invalid address gives a clear 400 error");
+  const notProvider = await call("POST", "/consent/grant", patient, {
+    providerAddress: addr("patient2"),
+    validUntil: Math.floor(Date.now() / 1000) + 3600,
+  });
+  check(
+    notProvider.status === 500 &&
+      notProvider.data.error === "ConsentManager: grantee is not a registered provider",
+    "granting consent to a non-provider returns the clean contract reason (no transaction dump)"
+  );
   const badParam = await call("GET", "/audit/not-an-address", auditor);
   check(badParam.status === 400, "invalid address in the URL gives 400");
 

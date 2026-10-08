@@ -6,6 +6,8 @@ const { signerFor, findByAddress } = require("../services/users");
 
 const { addressFields } = require("../middleware/validate");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 
 const ALL_RECORDS = ethers.ZeroHash;
@@ -34,7 +36,7 @@ router.post("/grant", requireAuth, requireRole("patient"), addressFields("provid
 
     res.status(201).json({ txHash: receipt.hash, blockNumber: receipt.blockNumber });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -49,7 +51,7 @@ router.post("/:consentId/revoke", requireAuth, requireRole("patient"), async (re
 
     res.json({ txHash: receipt.hash });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -72,7 +74,7 @@ router.get("/mine", requireAuth, requireRole("patient"), async (req, res) => {
     );
     res.json({ consents });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 

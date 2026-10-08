@@ -5,6 +5,8 @@ const { signerFor, findByAddress } = require("../services/users");
 
 const { addressFields } = require("../middleware/validate");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 
 /**
@@ -34,7 +36,7 @@ router.post("/request", requireAuth, requireRole("provider"), addressFields("pat
 
     res.json({ granted, txHash: receipt.hash, blockNumber: receipt.blockNumber });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 

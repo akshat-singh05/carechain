@@ -56,7 +56,7 @@ npm run dev
 To check the whole stack without the UI, run the end-to-end test against the running backend
 (logs in as each role, uploads/encrypts/anchors a record, exercises consent grant/deny/revoke,
 purpose- and time-bound checks, Merkle-batched upload with on-chain proof verification,
-break-glass access and the audit trail -- 43 assertions):
+break-glass access and the audit trail -- 44 assertions):
 
 ```bash
 npm run e2e

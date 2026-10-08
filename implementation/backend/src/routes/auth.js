@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const { findByUsername } = require("../services/users");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
@@ -16,7 +18,7 @@ router.post("/login", async (req, res) => {
   try {
     user = findByUsername(username);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: friendlyError(err) });
   }
   if (!user) return res.status(401).json({ error: "Invalid credentials" });
 

@@ -12,6 +12,8 @@ const { buildTree, getRoot, getProof } = require("../../../scripts/lib/merkle");
 
 const { addressFields, validateAddressParam } = require("../middleware/validate");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 router.param("patientAddress", validateAddressParam);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
@@ -54,7 +56,7 @@ router.post("/upload", requireAuth, requireRole("provider"), upload.single("file
       blockNumber: receipt.blockNumber,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -112,7 +114,7 @@ router.post("/upload-batch", requireAuth, requireRole("provider"), upload.array(
       records: records.map((r, i) => ({ recordId: r.recordId, cid: r.cid, contentHash: r.contentHash, proof: proofs[i] })),
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -133,7 +135,7 @@ router.get("/:recordId/meta", requireAuth, async (req, res) => {
       anchoredInBatch: meta.anchoredInBatch,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -179,7 +181,7 @@ router.get("/:recordId/content", requireAuth, async (req, res) => {
     res.setHeader("Content-Type", "application/octet-stream");
     res.send(plaintext);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -189,7 +191,7 @@ router.get("/patient/:patientAddress", requireAuth, async (req, res) => {
     const ids = await contracts.recordAnchor.getPatientRecordIds(req.params.patientAddress);
     res.json({ recordIds: ids });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 

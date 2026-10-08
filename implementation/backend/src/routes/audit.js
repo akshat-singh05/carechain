@@ -5,6 +5,8 @@ const { signerFor, findByAddress } = require("../services/users");
 
 const { validateAddressParam } = require("../middleware/validate");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 router.param("patientAddress", validateAddressParam);
 
@@ -51,7 +53,7 @@ router.get("/:patientAddress", requireAuth, async (req, res) => {
 
     res.json({ entries });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 

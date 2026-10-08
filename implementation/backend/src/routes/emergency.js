@@ -8,6 +8,8 @@ const keystore = require("../services/keystore");
 
 const { addressFields, validateAddressParam } = require("../middleware/validate");
 
+const { friendlyError } = require("../services/errors");
+
 const router = express.Router();
 router.param("patientAddress", validateAddressParam);
 
@@ -79,7 +81,7 @@ router.post("/access", requireAuth, requireRole("provider"), addressFields("pati
       recordContentBase64: content,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
@@ -103,7 +105,7 @@ router.get("/pending/:patientAddress", requireAuth, async (req, res) => {
     );
     res.json({ pendingNotification: pending, events });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: friendlyError(err) });
   }
 });
 
