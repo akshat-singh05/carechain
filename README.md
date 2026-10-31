@@ -62,7 +62,6 @@ and keeps a tamper-evident audit trail of every access, including emergency "bre
 |---|---|
 | [`implementation/`](implementation) | Solidity contracts and tests, Express backend, React front end |
 | [`experiments/`](experiments) | Benchmark scripts, raw CSV/JSON results, table and plot generators |
-| [`references/`](references) | Citation verification log |
 
 Contract overview:
 
