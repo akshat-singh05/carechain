@@ -112,10 +112,12 @@ async function main() {
     rows.push({ operation: "requestAccess", iteration: i, latencyMs, gasUsed });
   }
 
-  // --- revokeConsent (consent id == i, since each patient granted exactly once, in order) ---
+  // --- revokeConsent (each patient granted exactly once; look up its real consent id so the
+  // benchmark also works on a chain that already holds other consents) ---
   for (let i = 0; i < N; i++) {
+    const [consentId] = await contracts.consentManager.getPatientConsentIds(patientWallets[i].address);
     const { latencyMs, gasUsed } = await timeIt(async () => {
-      const tx = await contracts.consentManager.connect(patientWallets[i]).revokeConsent(i);
+      const tx = await contracts.consentManager.connect(patientWallets[i]).revokeConsent(consentId);
       return tx.wait();
     });
     rows.push({ operation: "revokeConsent", iteration: i, latencyMs, gasUsed });

@@ -1,0 +1,6 @@
+﻿System,Permissioned,FineGrainedConsent,EmergencyAccess,OffChainEncryption,AuditTrail,Interoperability
+MedRec (Azaria et al. 2016),No,No,No,No,Partial,No
+MeDShare (Xia et al. 2017),Partial,No,No,No,Yes,No
+Ancile (Dagher et al. 2018),No,Partial,No,Yes (PRE),Partial,No
+Fabric-based EHR (representative),Yes,Partial,No,Yes,Partial,Partial
+CareChain (this work),Yes,Yes,Yes,Yes,Yes,No

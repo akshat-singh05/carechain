@@ -1,101 +1,101 @@
 variant,operation,iteration,latencyMs,gasUsed
-naive,grant,0,148.43,25636
-naive,grant,1,164.29,25636
-naive,grant,2,173.23,25636
-naive,grant,3,231.38,25636
-naive,grant,4,195.51,25636
-naive,grant,5,137.88,25636
-naive,grant,6,134.68,25636
-naive,grant,7,146.53,25636
-naive,grant,8,127.43,25636
-naive,grant,9,158.51,25636
-naive,grant,10,148.57,25636
-naive,grant,11,153.56,25636
-naive,grant,12,209.83,25636
-naive,grant,13,151.97,25636
-naive,grant,14,133.72,25636
-naive,grant,15,143.19,25636
-naive,grant,16,161.73,25636
-naive,grant,17,183.96,25636
-naive,grant,18,146.38,25636
-naive,grant,19,129.27,25636
-naive,checkAccess (view call),0,27.15,
-naive,checkAccess (view call),1,27.18,
-naive,checkAccess (view call),2,31.61,
-naive,checkAccess (view call),3,30.39,
-naive,checkAccess (view call),4,15.70,
-naive,checkAccess (view call),5,22.25,
-naive,checkAccess (view call),6,16.51,
-naive,checkAccess (view call),7,16.03,
-naive,checkAccess (view call),8,31.59,
-naive,checkAccess (view call),9,32.37,
-naive,checkAccess (view call),10,15.94,
-naive,checkAccess (view call),11,15.11,
-naive,checkAccess (view call),12,15.60,
-naive,checkAccess (view call),13,15.60,
-naive,checkAccess (view call),14,26.08,
-naive,checkAccess (view call),15,31.57,
-naive,checkAccess (view call),16,30.91,
-naive,checkAccess (view call),17,15.50,
-naive,checkAccess (view call),18,31.08,
-naive,checkAccess (view call),19,16.18,
-abac,grantConsent,0,225.20,375158
-abac,grantConsent,1,185.81,340958
-abac,grantConsent,2,228.30,340958
-abac,grantConsent,3,164.72,340958
-abac,grantConsent,4,151.92,340958
-abac,grantConsent,5,133.71,340958
-abac,grantConsent,6,149.53,340958
-abac,grantConsent,7,133.39,340958
-abac,grantConsent,8,150.41,340958
-abac,grantConsent,9,135.65,340958
-abac,grantConsent,10,181.55,340958
-abac,grantConsent,11,132.67,340958
-abac,grantConsent,12,153.42,340958
-abac,grantConsent,13,148.33,340958
-abac,grantConsent,14,150.89,340958
-abac,grantConsent,15,131.01,340958
-abac,grantConsent,16,150.12,340958
-abac,grantConsent,17,133.13,340958
-abac,grantConsent,18,149.56,340958
-abac,grantConsent,19,132.97,340958
-abac,isConsentValid (view call),0,16.98,
-abac,isConsentValid (view call),1,15.51,
-abac,isConsentValid (view call),2,17.11,
-abac,isConsentValid (view call),3,15.63,
-abac,isConsentValid (view call),4,17.71,
-abac,isConsentValid (view call),5,15.86,
-abac,isConsentValid (view call),6,17.87,
-abac,isConsentValid (view call),7,16.36,
-abac,isConsentValid (view call),8,16.40,
-abac,isConsentValid (view call),9,16.82,
-abac,isConsentValid (view call),10,17.68,
-abac,isConsentValid (view call),11,15.02,
-abac,isConsentValid (view call),12,18.80,
-abac,isConsentValid (view call),13,15.73,
-abac,isConsentValid (view call),14,17.18,
-abac,isConsentValid (view call),15,15.91,
-abac,isConsentValid (view call),16,17.11,
-abac,isConsentValid (view call),17,17.42,
-abac,isConsentValid (view call),18,15.03,
-abac,isConsentValid (view call),19,17.40,
-abac,"checkAndLogAccess (tx, writes audit entry)",0,167.13,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",1,115.72,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",2,167.10,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",3,114.23,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",4,168.27,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",5,117.62,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",6,183.13,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",7,118.40,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",8,166.92,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",9,147.23,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",10,164.94,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",11,121.03,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",12,164.76,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",13,118.12,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",14,167.00,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",15,114.54,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",16,184.37,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",17,115.80,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",18,167.26,223222
-abac,"checkAndLogAccess (tx, writes audit entry)",19,116.42,223222
+naive,grant,0,86.84,25636
+naive,grant,1,103.31,25636
+naive,grant,2,109.62,25636
+naive,grant,3,94.77,25636
+naive,grant,4,100.38,25636
+naive,grant,5,105.26,25636
+naive,grant,6,85.87,25636
+naive,grant,7,101.64,25636
+naive,grant,8,100.16,25636
+naive,grant,9,80.45,25636
+naive,grant,10,95.90,25636
+naive,grant,11,96.17,25636
+naive,grant,12,82.12,25636
+naive,grant,13,95.16,25636
+naive,grant,14,97.87,25636
+naive,grant,15,88.99,25636
+naive,grant,16,96.29,25636
+naive,grant,17,97.20,25636
+naive,grant,18,95.17,25636
+naive,grant,19,99.97,25636
+naive,checkAccess (view call),0,19.76,
+naive,checkAccess (view call),1,14.30,
+naive,checkAccess (view call),2,13.07,
+naive,checkAccess (view call),3,12.80,
+naive,checkAccess (view call),4,13.59,
+naive,checkAccess (view call),5,13.77,
+naive,checkAccess (view call),6,13.79,
+naive,checkAccess (view call),7,13.52,
+naive,checkAccess (view call),8,14.16,
+naive,checkAccess (view call),9,13.52,
+naive,checkAccess (view call),10,13.39,
+naive,checkAccess (view call),11,13.64,
+naive,checkAccess (view call),12,12.89,
+naive,checkAccess (view call),13,14.41,
+naive,checkAccess (view call),14,14.38,
+naive,checkAccess (view call),15,14.85,
+naive,checkAccess (view call),16,13.10,
+naive,checkAccess (view call),17,13.06,
+naive,checkAccess (view call),18,13.96,
+naive,checkAccess (view call),19,13.49,
+abac,grantConsent,0,116.07,375158
+abac,grantConsent,1,97.03,340958
+abac,grantConsent,2,98.80,340958
+abac,grantConsent,3,109.85,340958
+abac,grantConsent,4,99.59,340958
+abac,grantConsent,5,100.66,340958
+abac,grantConsent,6,112.47,340958
+abac,grantConsent,7,95.29,340958
+abac,grantConsent,8,100.28,340958
+abac,grantConsent,9,110.74,340958
+abac,grantConsent,10,97.22,340958
+abac,grantConsent,11,100.84,340958
+abac,grantConsent,12,110.44,340958
+abac,grantConsent,13,95.64,340958
+abac,grantConsent,14,100.91,340958
+abac,grantConsent,15,107.32,340958
+abac,grantConsent,16,94.07,340958
+abac,grantConsent,17,93.74,340958
+abac,grantConsent,18,109.61,340958
+abac,grantConsent,19,95.74,340958
+abac,isConsentValid (view call),0,14.06,
+abac,isConsentValid (view call),1,13.37,
+abac,isConsentValid (view call),2,13.18,
+abac,isConsentValid (view call),3,12.46,
+abac,isConsentValid (view call),4,14.55,
+abac,isConsentValid (view call),5,14.19,
+abac,isConsentValid (view call),6,13.17,
+abac,isConsentValid (view call),7,13.24,
+abac,isConsentValid (view call),8,14.37,
+abac,isConsentValid (view call),9,13.76,
+abac,isConsentValid (view call),10,12.29,
+abac,isConsentValid (view call),11,14.36,
+abac,isConsentValid (view call),12,13.58,
+abac,isConsentValid (view call),13,12.53,
+abac,isConsentValid (view call),14,14.41,
+abac,isConsentValid (view call),15,14.76,
+abac,isConsentValid (view call),16,13.02,
+abac,isConsentValid (view call),17,13.88,
+abac,isConsentValid (view call),18,17.17,
+abac,isConsentValid (view call),19,14.44,
+abac,"checkAndLogAccess (tx, writes audit entry)",0,108.67,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",1,79.88,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",2,78.99,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",3,112.27,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",4,83.47,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",5,79.90,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",6,108.13,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",7,80.02,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",8,83.21,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",9,111.75,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",10,81.87,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",11,83.60,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",12,128.21,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",13,79.22,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",14,81.08,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",15,113.62,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",16,83.40,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",17,82.95,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",18,116.04,223222
+abac,"checkAndLogAccess (tx, writes audit entry)",19,84.20,223222

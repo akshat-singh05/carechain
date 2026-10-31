@@ -1,0 +1,9 @@
+sizeBytes,status,gasUsed,latencyMs,note
+107,ok,135340,105.5,
+256,ok,226432,118.1,
+512,ok,407996,108.8,
+1024,ok,771100,111.3,
+4096,ok,2949856,146.0,
+16384,ok,11664892,205.1,
+32768,rejected,,,"node rejected the tx: gas estimate exceeds the 16,777,216 (2^24) per-transaction gas cap (EIP-7825) of Hardhat 2.29"
+65536,rejected,,,"node rejected the tx: gas estimate exceeds the 16,777,216 (2^24) per-transaction gas cap (EIP-7825) of Hardhat 2.29"

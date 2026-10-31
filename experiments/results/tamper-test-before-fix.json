@@ -1,0 +1,54 @@
+{
+  "run": "2026-10-09T18:02:24.508Z",
+  "carechain": {
+    "baselineRead": {
+      "status": 200,
+      "body": "BP 118/76 mmHg | Dx: healthy | Plan: none"
+    },
+    "T1_corrupt": {
+      "readStatus": 500,
+      "readBody": "{\"error\":\"Unsupported state or unable to authenticate data\"}",
+      "independentHashCheckDetects": true
+    },
+    "T2_forge": {
+      "readStatus": 200,
+      "readBody": "BP 118/76 mmHg | Dx: healthy | Plan: STOP ALL MEDICATION",
+      "independentHashCheckDetects": true
+    },
+    "T3_audit": {
+      "stateChangingFunctionsOnAuditLog": [
+        "append",
+        "authorizeLogger",
+        "grantRole",
+        "renounceRole",
+        "revokeRole"
+      ],
+      "appendByNonLogger": "reverted: AccessControlUnauthorizedAccount(address,bytes32)",
+      "editOrDeleteFunctionExists": false
+    }
+  },
+  "centralised": {
+    "baselineRead": {
+      "status": 200,
+      "body": "BP 118/76 mmHg | Dx: healthy | Plan: none"
+    },
+    "T1_corrupt": {
+      "readStatus": 500,
+      "readBody": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head"
+    },
+    "T2_forge": {
+      "readStatus": 200,
+      "readBody": "BP 118/76 mmHg | Dx: healthy | Plan: STOP ALL MEDICATION",
+      "storedHashRewrittenToMatch": true,
+      "independentAnchor": "none (hash lives in the same database)"
+    },
+    "T3_audit": {
+      "editAccepted": true,
+      "entryAfterEdit": {
+        "action": "ACCESS_DENIED",
+        "actor": "0x0000000000000000000000000000000000000000"
+      },
+      "alarm": "none"
+    }
+  }
+}

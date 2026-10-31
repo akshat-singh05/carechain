@@ -98,7 +98,7 @@ def anchoring_table():
         return placeholder("anchoring_table.tex", "anchoring-cost.csv missing (run bench-anchoring-cost.js)")
 
     cols = ["batchSize", "individualGasPerRecord", "batchRootGasPerRecordAmortized", "batchRegisterGasPerRecord"]
-    header_labels = ["Batch size", "Individual\\\\(gas/record)", "Batched root\\\\(gas/record, amortized)", "Batched + register\\\\(gas/record)"]
+    header_labels = ["Batch size", "Individual\\\\(gas/record)", "Batched root\\\\(gas/record, amortized)", "Per-record registration\\\\(gas/record, optional)"]
     lines = ["\\begin{tabular}{lccc}", "\\toprule", " & ".join(header_cell(h) for h in header_labels) + " \\\\", "\\midrule"]
     for r in sorted(rows, key=lambda r: int(r["batchSize"])):
         lines.append(" & ".join(esc(r[c]) for c in cols) + " \\\\")

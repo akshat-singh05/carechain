@@ -1,0 +1,13 @@
+system,operation,n,meanMs,p50Ms,p95Ms
+carechain,upload,30,123.01,120.44,159.92
+carechain,grant,30,113.86,109.34,129.64
+carechain,read,30,194.44,189.67,218.10
+carechain,revoke,30,120.82,120.69,142.74
+carechain,denied,30,183.69,180.37,245.05
+carechain,break-glass,4,256.10,251.18,281.15
+centralised,upload,30,8.86,8.56,11.47
+centralised,grant,30,5.16,4.86,8.11
+centralised,read,30,5.52,5.30,6.94
+centralised,revoke,30,3.95,3.74,5.61
+centralised,denied,30,4.45,4.02,7.06
+centralised,break-glass,4,5.49,5.70,6.76
