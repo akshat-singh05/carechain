@@ -11,7 +11,8 @@
     "seed:local": "hardhat run scripts/seed-demo.js --network localhost",
     "coverage": "hardhat coverage",
     "backend": "node backend/src/index.js",
-    "e2e": "node scripts/e2e.js"
+    "e2e": "node scripts/e2e.js",
+    "test:integrity": "node scripts/integrity-test.js"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",

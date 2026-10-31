@@ -5,7 +5,7 @@ const { ethers } = require("ethers");
 const { requireAuth, requireRole } = require("../middleware/auth");
 const { contractsWithSigner, getContracts } = require("../chain/contracts");
 const { signerFor, findByAddress } = require("../services/users");
-const { encryptRecord, decryptRecord } = require("../services/crypto");
+const { encryptRecord, decryptRecord, sha256Hex } = require("../services/crypto");
 const storage = require("../services/storage");
 const keystore = require("../services/keystore");
 const { buildTree, getRoot, getProof } = require("../../../scripts/lib/merkle");
@@ -176,6 +176,11 @@ router.get("/:recordId/content", requireAuth, async (req, res) => {
 
     const key = keystore.unwrap(recordId);
     const blob = storage.get(meta.cid);
+    // Integrity check against the ledger: the stored ciphertext must hash to the
+    // value anchored on-chain, otherwise it was replaced after anchoring.
+    if ("0x" + sha256Hex(blob) !== meta.contentHash.toLowerCase()) {
+      return res.status(409).json({ error: "Integrity check failed: stored ciphertext does not match the hash anchored on-chain" });
+    }
     const plaintext = decryptRecord(blob, key);
 
     res.setHeader("Content-Type", "application/octet-stream");

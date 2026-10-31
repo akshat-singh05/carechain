@@ -18,7 +18,7 @@ module.exports = {
       blockGasLimit: 30_000_000,
     },
     localhost: {
-      url: "http://127.0.0.1:8545",
+      url: process.env.RPC_URL || "http://127.0.0.1:8545",
     },
   },
   gasReporter: {

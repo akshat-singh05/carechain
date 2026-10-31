@@ -7,13 +7,22 @@ import {
   getAuditTrail,
   getPendingNotifications,
 } from "../api/client";
+import { Alert, AuditTable, Badge, Button, Card, CopyButton, CopyText, Empty, Field, Icon, Stat, Tabs, formatWhen } from "../components/ui.jsx";
+
+function consentStatus(c) {
+  if (c.revoked) return ["Revoked", "amber"];
+  if (Number(c.validUntil) * 1000 < Date.now()) return ["Expired", "gray"];
+  return ["Active", "green"];
+}
 
 export default function PatientView({ user }) {
+  const [tab, setTab] = useState("overview");
   const [recordIds, setRecordIds] = useState([]);
   const [consents, setConsents] = useState([]);
   const [trail, setTrail] = useState([]);
   const [pending, setPending] = useState(null);
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
 
   const [providerAddress, setProviderAddress] = useState("");
   const [purpose, setPurpose] = useState("treatment");
@@ -44,14 +53,17 @@ export default function PatientView({ user }) {
   async function submitGrant(e) {
     e.preventDefault();
     setError(null);
+    setBusy(true);
     try {
       const validFrom = Math.floor(Date.now() / 1000);
       const validUntil = validFrom + Number(durationHours) * 3600;
       await grantConsent({ providerAddress, purpose, validFrom, validUntil });
       setProviderAddress("");
-      refresh();
+      await refresh();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -65,89 +77,131 @@ export default function PatientView({ user }) {
     }
   }
 
+  // Emergency accesses the patient has not acknowledged yet (remembered per patient in this browser).
+  const seenKey = `carechain_seen_emergencies_${user.address}`;
+  const readSeen = () => {
+    try { return JSON.parse(localStorage.getItem(seenKey) || "[]"); } catch { return []; }
+  };
+  const [seen, setSeen] = useState(readSeen);
+  const unseen = (pending?.events || []).filter((e) => !seen.includes(e.eventId));
+  function dismissEmergencies() {
+    const all = (pending?.events || []).map((e) => e.eventId);
+    try { localStorage.setItem(seenKey, JSON.stringify(all)); } catch { /* storage unavailable */ }
+    setSeen(all);
+  }
+
+  const active = consents.filter((c) => consentStatus(c)[0] === "Active").length;
+  const emergencies = trail.filter((e) => e.isEmergency).length;
+
   return (
     <div>
-      {pending?.pendingNotification && (
-        <div className="notice">
-          You have an unread emergency-access notification below — a clinician used break-glass access
-          on one of your records.
+      {unseen.length > 0 && (
+        <Alert kind="warning" onClose={dismissEmergencies}>
+          <strong>Emergency access on your records.</strong>{" "}
+          {unseen.length === 1 ? "A clinician used break-glass access" : `${unseen.length} break-glass accesses were used`} on your records.
+          <ul style={{ margin: "6px 0 0", paddingLeft: 18 }}>
+            {unseen.slice(-3).map((e) => (
+              <li key={e.eventId}>
+                {formatWhen(e.timestamp)} — “{e.reason}” (responder <code>{e.responder.slice(0, 8)}…{e.responder.slice(-4)}</code>)
+              </li>
+            ))}
+          </ul>
+        </Alert>
+      )}
+      {error && <Alert kind="error" onClose={() => setError(null)}>{error}</Alert>}
+
+      <Tabs
+        active={tab}
+        onChange={setTab}
+        tabs={[
+          { id: "overview", label: "Overview", icon: "layers" },
+          { id: "consents", label: "Consents", icon: "key", count: consents.length },
+          { id: "audit", label: "Audit trail", icon: "list", count: trail.length },
+        ]}
+      />
+
+      {tab === "overview" && (
+        <>
+          <div className="grid-stats">
+            <Stat icon="file" tone="blue" value={recordIds.length} label="Records on the ledger" />
+            <Stat icon="check" tone="green" value={active} label="Active consents" />
+            <Stat icon="list" tone="blue" value={trail.length} label="Audit events" />
+            <Stat icon="bolt" tone={emergencies ? "red" : "amber"} value={emergencies} label="Emergency accesses" />
+          </div>
+          <Card title="My records" icon="file" subtitle="Record identifiers anchored on-chain. The clinical content itself is encrypted off-chain." flush>
+            {recordIds.length === 0 ? (
+              <Empty icon="file" title="No records yet" text="Records appear here after a provider uploads and anchors them for you." />
+            ) : (
+              <ul className="rec-list">
+                {recordIds.map((id) => (
+                  <li key={id}>
+                    <span className="ico"><Icon name="file" size={16} /></span>
+                    <span className="id">{id}</span>
+                    <CopyButton value={id} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </>
+      )}
+
+      {tab === "consents" && (
+        <div className="grid-2">
+          <Card title="Grant consent" icon="key" subtitle="Allow a registered provider to read your records for a stated purpose.">
+            <form onSubmit={submitGrant}>
+              <Field label="Provider address" hint="The provider’s blockchain address (0x…, 42 characters).">
+                <input className="mono-input" value={providerAddress} onChange={(e) => setProviderAddress(e.target.value)} placeholder="0x…" />
+              </Field>
+              <div className="row">
+                <Field label="Purpose">
+                  <input value={purpose} onChange={(e) => setPurpose(e.target.value)} />
+                </Field>
+                <Field label="Duration (hours)">
+                  <input type="number" min="1" value={durationHours} onChange={(e) => setDurationHours(e.target.value)} />
+                </Field>
+              </div>
+              <div className="actions">
+                <Button type="submit" busy={busy} icon="check">Grant consent (all records)</Button>
+              </div>
+            </form>
+          </Card>
+
+          <Card title="My consents" icon="list" subtitle="Revoking takes effect immediately." flush>
+            {consents.length === 0 ? (
+              <Empty icon="key" title="No consents yet" text="Grant a provider access to see it listed here." />
+            ) : (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>ID</th><th>Provider</th><th>Valid until</th><th>Status</th><th></th></tr>
+                  </thead>
+                  <tbody>
+                    {consents.map((c) => {
+                      const [label, kind] = consentStatus(c);
+                      return (
+                        <tr key={c.consentId}>
+                          <td className="num">#{c.consentId}</td>
+                          <td><CopyText value={c.provider} /></td>
+                          <td className="when">{formatWhen(c.validUntil)}</td>
+                          <td><Badge kind={kind}>{label}</Badge></td>
+                          <td>{label === "Active" && <button className="btn danger sm" onClick={() => doRevoke(c.consentId)}>Revoke</button>}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
         </div>
       )}
-      {error && <div className="error">{error}</div>}
 
-      <div className="card">
-        <h2>My records</h2>
-        {recordIds.length === 0 && <p>No records anchored yet.</p>}
-        <ul>
-          {recordIds.map((id) => (
-            <li key={id} style={{ fontFamily: "monospace", fontSize: 12 }}>{id}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="card">
-        <h2>Grant consent</h2>
-        <form onSubmit={submitGrant}>
-          <label>Provider address</label>
-          <input value={providerAddress} onChange={(e) => setProviderAddress(e.target.value)} placeholder="0x..." />
-          <div className="row">
-            <div>
-              <label>Purpose</label>
-              <input value={purpose} onChange={(e) => setPurpose(e.target.value)} />
-            </div>
-            <div>
-              <label>Duration (hours)</label>
-              <input type="number" value={durationHours} onChange={(e) => setDurationHours(e.target.value)} />
-            </div>
-          </div>
-          <button type="submit">Grant consent (all records)</button>
-        </form>
-      </div>
-
-      <div className="card">
-        <h2>My consents</h2>
-        <table>
-          <thead>
-            <tr><th>ID</th><th>Provider</th><th>Valid until</th><th>Status</th><th></th></tr>
-          </thead>
-          <tbody>
-            {consents.map((c) => (
-              <tr key={c.consentId}>
-                <td>{c.consentId}</td>
-                <td style={{ fontFamily: "monospace", fontSize: 12 }}>{c.provider}</td>
-                <td>{new Date(c.validUntil * 1000).toLocaleString()}</td>
-                <td>{c.revoked ? "Revoked" : "Active"}</td>
-                <td>
-                  {!c.revoked && <button className="danger" onClick={() => doRevoke(c.consentId)}>Revoke</button>}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="card">
-        <h2>Audit trail</h2>
-        <table>
-          <thead>
-            <tr><th>When</th><th>Actor</th><th>Action</th><th>Purpose</th></tr>
-          </thead>
-          <tbody>
-            {trail.map((e) => (
-              <tr key={e.entryId}>
-                <td>{new Date(e.timestamp * 1000).toLocaleString()}</td>
-                <td style={{ fontFamily: "monospace", fontSize: 12 }}>{e.actor}</td>
-                <td>
-                  <span className={`badge ${e.isEmergency ? "emergency" : e.action === "ACCESS_GRANTED" ? "granted" : "denied"}`}>
-                    {e.action}
-                  </span>
-                </td>
-                <td>{e.purpose}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {tab === "audit" && (
+        <Card title="Audit trail" icon="list" subtitle="Every action on your records, in order. This log is append-only and cannot be edited." flush>
+          <AuditTable entries={trail} />
+        </Card>
+      )}
     </div>
   );
 }

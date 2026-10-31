@@ -6,6 +6,12 @@ function authHeaders() {
 }
 
 async function handle(res) {
+  if (res.status === 401 && localStorage.getItem("carechain_token")) {
+    // Session expired or token invalid: drop it and return to the sign-in screen.
+    localStorage.removeItem("carechain_token");
+    localStorage.removeItem("carechain_user");
+    window.location.reload();
+  }
   if (!res.ok) {
     let body;
     try {
