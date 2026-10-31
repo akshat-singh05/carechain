@@ -23,3 +23,10 @@ implementation/backend/storage/*
 !implementation/backend/storage/.gitkeep
 implementation/backend/src/chain/deployment.json
 implementation/backend/src/chain/users.json
+
+# Local-only documents (not published)
+paper/
+reports/
+PLAN.md
+SUBMISSION_CHECKLIST.md
+VERIFY_LIST.md

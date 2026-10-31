@@ -1,7 +1,7 @@
 # CareChain — Implementation
 
 A decentralized healthcare information exchange prototype implementing the three contributions
-from [`/PLAN.md`](../PLAN.md): time-bound/purpose-bound (ABAC) consent, break-glass emergency access
+from the project plan: time-bound/purpose-bound (ABAC) consent, break-glass emergency access
 with mandatory audit + notification, and Merkle-batched hash anchoring.
 
 **Prerequisites:** Node.js 18+ and npm. (Tested on Node 24 / Windows 11.)

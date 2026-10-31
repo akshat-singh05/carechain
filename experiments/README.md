@@ -1,6 +1,6 @@
 # CareChain — Experiments
 
-Benchmark scripts for the six experiments in [`/PLAN.md`](../PLAN.md) Section 4. Every script writes
+Benchmark scripts for the six experiments in the project plan (Section 4). Every script writes
 real CSVs from a real local run against the deployed contracts in `/implementation`. The CSVs checked
 in under `results/` come from a run on the machine described in `results/hardware-spec.txt`; every
 number in the paper is generated from them (`plot_results.py`, `generate_tables.py`).
