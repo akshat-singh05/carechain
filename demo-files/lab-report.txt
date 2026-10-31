@@ -1,0 +1,5 @@
+LAB REPORT
+Patient: P-1042
+HbA1c: 6.1%  |  BP: 128/82 mmHg
+Diagnosis: pre-diabetes
+Plan: diet + 3-month review
